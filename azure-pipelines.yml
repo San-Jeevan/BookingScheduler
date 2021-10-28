@@ -1,0 +1,71 @@
+# ASP.NET Core (.NET Framework)
+
+# Build and test ASP.NET Core projects targeting the full .NET Framework.
+# Add steps that publish symbols, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+- master
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+  YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
+  NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
+
+steps:
+- task: Cache@2
+  inputs:
+    key: yarn | $(Agent.OS) | $(Build.SourcesDirectory)/Kantinebooking/ClientApp/yarn.lock
+    path: $(YARN_CACHE_FOLDER)
+    restoreKeys: |
+      yarn | $(Agent.OS)
+      yarn
+  displayName: Cache Yarn packages
+
+- script: yarn --frozen-lockfile
+  workingDirectory: "Kantinebooking/ClientApp/"
+
+- script: 'yarn react-scripts build'
+  workingDirectory: "Kantinebooking/ClientApp/"
+  displayName: 'Yarn react build'
+
+# - task: Cache@2
+#   inputs:
+#     key: 'nuget | "$(Agent.OS)" | $(Build.SourcesDirectory)/Kantinebooking/packages.lock.json'
+#     restoreKeys: |
+#        nuget | "$(Agent.OS)"
+#     path: $(NUGET_PACKAGES)
+#   displayName: Cache NuGet packages (funker ikke)
+
+
+- task: NuGetToolInstaller@1
+
+- task: NuGetCommand@2
+  inputs:
+    restoreSolution: '$(solution)'
+
+
+- task: VSBuild@1
+  inputs:
+    solution: '$(solution)'
+    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: 'Kantinebooking/ClientApp/build/'
+    Contents: '**'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)/ClientApp/build/'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'kantinebooking'
+    publishLocation: 'Container'

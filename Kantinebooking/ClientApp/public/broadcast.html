@@ -1,0 +1,55 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>Prototype of accurate videoeditor</title>
+    <link rel="stylesheet" type="text/css" href="Filer_for_Broadcast%20frame%20accurate%20scrubbing%20test/jocPlayer.css">
+ 
+</head>
+
+<body onload="onLoadPage()">
+    <div id="mainBox">
+        <div id="JocPlayer">
+            <canvas id="myVideoCanvas" width="854" height="480">
+                Your browser does not support the HTML5 canvas tag.
+            </canvas>
+            <canvas id="myFrameVideoAudioProgress" width="854" height="10"></canvas>
+            <div id="myFrameDownloadProgress">
+                <div id="myBar" style="width: 100%;"></div>
+                <div id="myPos" style="left: 14.2333px;"></div>
+                <div id="myFrameTC">13 - 01:00:00:13</div>
+                <div id="myFrameInfo"></div>
+            </div>
+            <div id="myButtonsBarCanvas">
+                <div id="myButtonPlay"></div>
+            </div>
+        </div>
+        </div>
+
+
+
+    <script>
+        function onLoadPage() {
+            var url_vars = getUrlVars();
+
+            if ((typeof (url_vars.m) != 'undefined') && (url_vars.m != "")) {
+                var manifest_url = url_vars.m;
+                console.log("Detected manifest url: " + manifest_url);
+
+                setSourceUrl(manifest_url);
+            }
+        }
+
+        function getUrlVars() {
+            var vars = {};
+            window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+                vars[key] = value;
+            });
+
+            return vars;
+        }
+    </script>
+
+
+</body>
+</html>

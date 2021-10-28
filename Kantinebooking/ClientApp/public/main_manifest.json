@@ -1,0 +1,29 @@
+{
+  "video": {
+    "num_frames": 671,
+    "base_frame_path": "/media/video",
+    "base_file_name": "test1v_q14_",
+    "num_digits_frame": 5,
+    "frame_ext": ".jpg",
+    "fps": 30
+  },
+  "metadata": {
+    "0": { "smpte_tc": 108000 },
+    "204": {
+      "smpte_tc": 108204,
+      "cue_info": {
+        "info": "scene change",
+        "mean": "152",
+        "stddev": "72.2"
+      }
+    },
+    "414": {
+      "smpte_tc": 108414,
+      "cue_info": {
+        "info": "scene change",
+        "mean": "110",
+        "stddev": "72.4"
+      }
+    }
+  }
+}
